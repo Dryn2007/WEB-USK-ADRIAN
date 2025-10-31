@@ -30,7 +30,8 @@
                     <div class="progress-text">Complete the form below</div>
                 </div>
 
-                <form action="{{ route('admin.kategori.store') }}" method="POST" enctype="multipart/form-data" id="categoryForm">
+                <form action="{{ route('admin.kategori.store') }}" method="POST" enctype="multipart/form-data"
+                    id="categoryForm">
                     @csrf
 
                     <!-- Category Name Field -->
@@ -40,10 +41,8 @@
                             Category Name
                         </label>
                         <div class="input-wrapper">
-                            <input type="text" name="nama" id="nama"
-                                class="form-input @error('nama') error @enderror"
-                                placeholder="Enter category name (e.g., Fiction, Science, History)"
-                                required>
+                            <input type="text" name="nama" id="nama" class="form-input @error('nama') error @enderror"
+                                placeholder="Enter category name (e.g., Fiction, Science, History)" required>
                             <div class="input-icon">📝</div>
                         </div>
                         @error('nama')
@@ -78,7 +77,7 @@
                         <div class="field-hint">Provide a brief description to help users understand this category</div>
                     </div>
 
-                    <!-- Image Upload Field -->
+                    {{-- <!-- Image Upload Field -->
                     <div class="form-group">
                         <label for="foto" class="form-label">
                             <span class="label-icon">📷</span>
@@ -95,8 +94,7 @@
                                         JPG, PNG, GIF up to 5MB
                                     </div>
                                 </div>
-                                <input type="file" name="foto" id="foto"
-                                    class="file-input @error('foto') error @enderror"
+                                <input type="file" name="foto" id="foto" class="file-input @error('foto') error @enderror"
                                     accept="image/*" required>
                             </div>
 
@@ -121,7 +119,7 @@
                             </div>
                         @enderror
                         <div class="field-hint">Choose a representative image for this category</div>
-                    </div>
+                    </div> --}}
 
                     <!-- Form Actions -->
                     <div class="form-actions">
@@ -140,7 +138,7 @@
                 </form>
             </div>
 
-            <!-- Help Card -->
+            {{-- <!-- Help Card -->
             <div class="help-card">
                 <h4>💡 Tips for Creating Categories</h4>
                 <ul>
@@ -149,13 +147,13 @@
                     <li><strong>Good Images:</strong> Use high-quality, relevant images</li>
                     <li><strong>Descriptions:</strong> Help users understand the category scope</li>
                 </ul>
-            </div>
+            </div> --}}
         </div>
     </div>
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const form = document.getElementById('categoryForm');
                 const nameInput = document.getElementById('nama');
                 const descriptionInput = document.getElementById('deskripsi');
@@ -173,9 +171,9 @@
                 // Progress tracking
                 function updateProgress() {
                     let progress = 0;
-                    if (nameInput.value.trim()) progress += 33;
-                    if (descriptionInput.value.trim()) progress += 33;
-                    if (fileInput.files.length > 0) progress += 34;
+                    if (nameInput.value.trim()) progress += 50;
+                    if (descriptionInput.value.trim()) progress += 50;
+                    // if (fileInput.files.length > 0) progress += 34;
 
                     progressFill.style.width = progress + '%';
 
@@ -187,7 +185,7 @@
                 }
 
                 // Character counter
-                descriptionInput.addEventListener('input', function() {
+                descriptionInput.addEventListener('input', function () {
                     const count = this.value.length;
                     charCount.textContent = count;
 
@@ -207,17 +205,17 @@
                 // File upload handling
                 dropZone.addEventListener('click', () => fileInput.click());
 
-                dropZone.addEventListener('dragover', function(e) {
+                dropZone.addEventListener('dragover', function (e) {
                     e.preventDefault();
                     this.classList.add('drag-over');
                 });
 
-                dropZone.addEventListener('dragleave', function(e) {
+                dropZone.addEventListener('dragleave', function (e) {
                     e.preventDefault();
                     this.classList.remove('drag-over');
                 });
 
-                dropZone.addEventListener('drop', function(e) {
+                dropZone.addEventListener('drop', function (e) {
                     e.preventDefault();
                     this.classList.remove('drag-over');
                     const files = e.dataTransfer.files;
@@ -227,7 +225,7 @@
                     }
                 });
 
-                fileInput.addEventListener('change', function(e) {
+                fileInput.addEventListener('change', function (e) {
                     if (e.target.files.length > 0) {
                         handleFileSelect(e.target.files[0]);
                     }
@@ -245,7 +243,7 @@
                     }
 
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         previewImg.src = e.target.result;
                         fileName.textContent = file.name;
                         fileSize.textContent = formatFileSize(file.size);
@@ -265,7 +263,7 @@
                     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
                 }
 
-                removeImageBtn.addEventListener('click', function() {
+                removeImageBtn.addEventListener('click', function () {
                     fileInput.value = '';
                     dropZone.style.display = 'block';
                     imagePreview.style.display = 'none';
@@ -273,7 +271,7 @@
                 });
 
                 // Form submission
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', function (e) {
                     const btnText = submitBtn.querySelector('.btn-text');
                     const btnLoader = submitBtn.querySelector('.btn-loader');
 
@@ -285,11 +283,11 @@
                 // Input animations
                 const inputs = document.querySelectorAll('.form-input, .form-textarea');
                 inputs.forEach(input => {
-                    input.addEventListener('focus', function() {
+                    input.addEventListener('focus', function () {
                         this.parentElement.classList.add('focused');
                     });
 
-                    input.addEventListener('blur', function() {
+                    input.addEventListener('blur', function () {
                         if (!this.value) {
                             this.parentElement.classList.remove('focused');
                         }
@@ -376,7 +374,7 @@
         /* Form Wrapper */
         .form-wrapper {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            /* grid-template-columns: 2fr 1fr; */
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -706,8 +704,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Help Card */
@@ -777,6 +780,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -793,8 +797,16 @@
             animation-fill-mode: both;
         }
 
-        .form-group:nth-child(1) { animation-delay: 0.1s; }
-        .form-group:nth-child(2) { animation-delay: 0.2s; }
-        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.3s;
+        }
     </style>
 @endsection

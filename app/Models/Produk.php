@@ -10,7 +10,17 @@ class Produk extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kategori_id', 'nama', 'harga', 'deskripsi', 'foto'];
+    protected $fillable = ['kategori_id', 'nama', 'harga', 'deskripsi', 'foto', 'stock'];
+
+    public function canBeDeleted()
+    {
+        return $this->stock <= 0;
+    }
+
+    public function hasEnoughStock($quantity)
+    {
+        return $this->stock >= $quantity;
+    }
 
     public function kategori()
     {

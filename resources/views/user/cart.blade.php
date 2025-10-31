@@ -43,24 +43,29 @@
                                     Rp {{ number_format($item->produk->harga, 0, ',', '.') }}
                                 </td>
                                 <td class="py-4 text-center">
-                                    <div class="inline-flex items-center space-x-2">
-                                        <form method="POST" action="{{ route('user.cart.update') }}">
-                                            @csrf
-                                            <button type="submit" name="decrease" value="{{ $item->id }}"
-                                                class="px-2 py-1 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-full transition">
-                                                &minus;
-                                            </button>
-                                        </form>
-                                        <span class="w-6 text-center text-gray-800">{{ $item->jumlah }}</span>
-                                        <form method="POST" action="{{ route('user.cart.update') }}">
-                                            @csrf
-                                            <button type="submit" name="increase" value="{{ $item->id }}"
-                                                class="px-2 py-1 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-full transition">
-                                                &#43;
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
+    <div class="inline-flex items-center space-x-2">
+        <form method="POST" action="{{ route('user.cart.update') }}">
+            @csrf
+            <button type="submit" name="decrease" value="{{ $item->id }}"
+                class="px-2 py-1 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-full transition">
+                &minus;
+            </button>
+        </form>
+        <span class="w-6 text-center text-gray-800">{{ $item->jumlah }}</span>
+        <form method="POST" action="{{ route('user.cart.update') }}">
+            @csrf
+            <button type="submit" name="increase" value="{{ $item->id }}"
+                class="px-2 py-1 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-full transition"
+                {{ $item->jumlah >= $item->produk->stock ? 'disabled' : '' }}
+                {{ $item->jumlah >= $item->produk->stock ? 'class=opacity-50 cursor-not-allowed' : '' }}>
+                &#43;
+            </button>
+        </form>
+    </div>
+    <div class="text-xs text-gray-500 mt-1">
+        Stok tersedia: {{ $item->produk->stock }}
+    </div>
+</td>
                                 <td class="py-4 text-gray-700">
                                     Rp {{ number_format($subtotal, 0, ',', '.') }}
                                 </td>

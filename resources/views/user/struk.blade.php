@@ -13,7 +13,7 @@
             padding: 30px;
             line-height: 1.6;
         }
-    
+
         .header {
             text-align: center;
             font-weight: 600;
@@ -21,14 +21,14 @@
             color: #111827;
             margin-bottom: 25px;
         }
-    
+
         .header small {
             display: block;
             font-size: 13px;
             color: #6b7280;
             margin-top: 5px;
         }
-    
+
         .info {
             margin-bottom: 25px;
             background: #f3f4f6;
@@ -36,11 +36,11 @@
             border-radius: 8px;
             border: 1px solid #e5e7eb;
         }
-    
+
         .info p {
             margin: 6px 0;
         }
-    
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -49,7 +49,7 @@
             overflow: hidden;
             box-shadow: 0 0 0 1px #e5e7eb;
         }
-    
+
         th {
             background-color: #2563eb;
             color: white;
@@ -57,24 +57,24 @@
             font-weight: 600;
             text-align: left;
         }
-    
+
         td {
             padding: 10px;
             border-bottom: 1px solid #e5e7eb;
             background-color: #ffffff;
         }
-    
+
         tr:last-child td {
             border-bottom: none;
         }
-    
+
         .total-row td {
             font-weight: bold;
             background-color: #fef3c7;
             border-top: 2px solid #fbbf24;
             color: #111827;
         }
-    
+
         .footer {
             margin-top: 40px;
             text-align: center;

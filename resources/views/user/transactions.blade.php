@@ -27,10 +27,10 @@
                     </div>
 
                     <div class="flex gap-3 items-center">
-                        <a href="{{ route('user.struk', $trx->id) }}"
+                        {{-- <a href="{{ route('user.struk', $trx->id) }}"
                             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition">
                             📄 Lihat Struk
-                        </a>
+                        </a> --}}
 
                         @if ($trx->status === 'dikirim')
                             <form method="POST" action="{{ route('user.transactions.selesai', $trx->id) }}">

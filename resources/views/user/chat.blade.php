@@ -11,6 +11,9 @@
                         class="inline-block px-4 py-2 rounded-lg {{ $msg->sender_id == auth()->id() ? 'bg-green-100' : 'bg-gray-200' }}">
                         <p class="text-sm">{{ $msg->message }}</p>
                         <p class="text-xs text-gray-500">{{ $msg->created_at->format('H:i') }}</p>
+                        @if($msg->sender_id != auth()->id() && !$msg->is_read)
+                            <span class="text-xs text-red-500 font-bold">Baru</span>
+                        @endif
                     </div>
                 </div>
             @empty

@@ -33,11 +33,11 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'kategori_id' => 'required|exists:kategoris,id',
             'nama' => 'required|string|max:255',
             'harga' => 'required|numeric',
             'deskripsi' => 'nullable|string',
-            'foto' => 'nullable|image|max:2048'
+            'foto' => 'required|image|max:2048',
+            'kategori_id' => 'required|exists:kategoris,id'
         ]);
 
         if ($request->hasFile('foto')) {
@@ -58,11 +58,11 @@ class ProdukController extends Controller
     public function update(Request $request, Produk $produk)
     {
         $data = $request->validate([
-            'kategori_id' => 'required|exists:kategoris,id',
             'nama' => 'required|string|max:255',
             'harga' => 'required|numeric',
             'deskripsi' => 'nullable|string',
-            'foto' => 'nullable|image|max:2048'
+            'foto' => 'nullable|image|max:2048',
+            'kategori_id' => 'required|exists:kategoris,id'
         ]);
 
         if ($request->hasFile('foto')) {
@@ -78,8 +78,27 @@ class ProdukController extends Controller
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diupdate');
     }
 
+    public function updateStock(Request $request, Produk $produk)
+    {
+        $request->validate([
+            'stock' => 'required|integer|min:0'
+        ]);
+
+        $produk->update([
+            'stock' => $request->stock
+        ]);
+
+        return redirect()->back()->with('success', 'Stock updated successfully');
+    }
+
+
+
     public function destroy(Produk $produk)
     {
+        if (!$produk->canBeDeleted()) {
+            return redirect()->back()->with('error', 'Cannot delete Produk with remaining stock');
+        }
+
         if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
             Storage::disk('public')->delete($produk->foto);
         }

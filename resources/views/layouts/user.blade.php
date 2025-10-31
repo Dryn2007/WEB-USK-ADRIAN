@@ -8,6 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }} - User</title>
 
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,6 +19,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+
 <body class="bg-pink-50 font-sans antialiased">
     <div id="app">
         <!-- Navbar -->
@@ -26,20 +28,26 @@
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex-shrink-0">
                         <a href="{{ url('/user/dashboard') }}" class="text-white font-bold text-lg">
-                        ADR BOOKS ( {{ Auth::user()->name }} )
+                            ADR BOOKS ( {{ Auth::user()->name }} )
                         </a>
                     </div>
+                    <a href="{{ route('user.chat') }}" class="posisi-link-chat-anda">
+                            Chat dengan Admin
+                            @if(session('user_unread_messages_count'))
+                                    <span class="badge-notifikasi-user">{{ session('user_unread_messages_count') }}</span>
+                            @endif
+                    </a>
 
                     <div class="flex items-center space-x-6">
-                        <a href="https://myportfolioadrian.vercel.app" class="text-white hover:text-pink-100 font-medium">
-                            About Us
-                        </a>
 
                         <!-- Tombol Logout -->
                         <a href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                             class="text-white hover:text-pink-100 font-medium">
                             Logout
+                        </a>
+                        <a href="{{ route('about.show') }}" class="text-white font-semibold hover:text-gray-300">
+                            About Us
                         </a>
                     </div>
                 </div>

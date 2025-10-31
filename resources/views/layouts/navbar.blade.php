@@ -24,56 +24,56 @@
 <body class="bg-gray-100 min-h-screen font-sans antialiased">
     <div id="app">
         <!-- Navbar -->
-<nav class="bg-pink-600 fixed top-0 left-0 w-full z-50 shadow">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-            <!-- Logo -->
-            <a href="/" class="text-white font-bold text-lg">
-                ADR BOOKS STORE
-            </a>
+        <nav class="bg-pink-600 fixed top-0 left-0 w-full z-50 shadow">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo -->
+                    <a href="/" class="text-white font-bold text-lg">
+                        ADR BOOKS STORE
+                    </a>
 
-            <!-- Menu kanan -->
-            @if (Route::has('login'))
-                <div class="flex items-center space-x-4">
-                    @auth
-                        @php
-                            $role = Auth::user()->role ?? 'user';
-                        @endphp
+                    <!-- Menu kanan -->
+                    @if (Route::has('login'))
+                        <div class="flex items-center space-x-4">
+                            @auth
+                                @php
+                                    $role = Auth::user()->role ?? 'user';
+                                @endphp
 
-                        @if ($role === 'admin')
-                            <a href="{{ route('admin.dashboard') }}"
-                                class="bg-pink-500 hover:bg-pink-700 text-white text-sm px-4 py-2 rounded transition">
-                                Dashboard Admin
-                            </a>
-                        @elseif ($role === 'user')
-                            <a href="{{ route('user.dashboard') }}"
-                                class="bg-pink-500 hover:bg-pink-700 text-white text-sm px-4 py-2 rounded transition">
-                                Dashboard User
-                            </a>
-                        @else
-                            <a href="{{ url('/dashboard') }}"
-                                class="bg-pink-500 hover:bg-pink-700 text-white text-sm px-4 py-2 rounded transition">
-                                Dashboard
-                            </a>
-                        @endif
-                    @else
-                        <button id="loginButton"
-                            class="bg-pink-200 text-pink-600 hover:border hover:border-pink-500 text-sm px-4 py-2 rounded transition">
-                            Log in
-                        </button>
+                                @if ($role === 'admin')
+                                    <a href="{{ route('admin.dashboard') }}"
+                                        class="bg-pink-500 hover:bg-pink-700 text-white text-sm px-4 py-2 rounded transition">
+                                        Dashboard Admin
+                                    </a>
+                                @elseif ($role === 'user')
+                                    <a href="{{ route('user.dashboard') }}"
+                                        class="bg-pink-500 hover:bg-pink-700 text-white text-sm px-4 py-2 rounded transition">
+                                        Dashboard User
+                                    </a>
+                                @else
+                                    <a href="{{ url('/dashboard') }}"
+                                        class="bg-pink-500 hover:bg-pink-700 text-white text-sm px-4 py-2 rounded transition">
+                                        Dashboard
+                                    </a>
+                                @endif
+                            @else
+                                <button id="loginButton"
+                                    class="bg-pink-200 text-pink-600 hover:border hover:border-pink-500 text-sm px-4 py-2 rounded transition">
+                                    Log in
+                                </button>
 
-                        @if (Route::has('register'))
-                            <button id="registerButton"
-                                class="border border-pink-200 text-white hover:border-pink-300 hover:bg-pink-500 hover:text-white text-sm px-4 py-2 rounded transition">
-                                Register
-                            </button>
-                        @endif
-                    @endauth
+                                @if (Route::has('register'))
+                                    <button id="registerButton"
+                                        class="border border-pink-200 text-white hover:border-pink-300 hover:bg-pink-500 hover:text-white text-sm px-4 py-2 rounded transition">
+                                        Register
+                                    </button>
+                                @endif
+                            @endauth
+                        </div>
+                    @endif
                 </div>
-            @endif
-        </div>
-    </div>
-</nav>
+            </div>
+        </nav>
 
 
 
@@ -90,17 +90,17 @@
                 <div class="bg-white p-6 rounded-lg w-full max-w-md relative">
                     <button id="closeLoginModal"
                         class="absolute top-2 right-3 text-gray-600 hover:text-red-500 text-2xl">&times;</button>
-            
+
                     <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
-            
+
                     @if(session('status'))
                         <div class="bg-green-100 text-green-800 p-2 rounded mb-3">{{ session('status') }}</div>
                     @endif
-            
+
                     @if(session('error'))
                         <div class="bg-red-100 text-red-800 p-2 rounded mb-3">{{ session('error') }}</div>
                     @endif
-            
+
                     @if ($errors->any())
                         <div class="bg-red-100 text-red-800 p-2 rounded mb-3">
                             <ul class="list-disc pl-5">
@@ -110,21 +110,22 @@
                             </ul>
                         </div>
                     @endif
-            
+
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-            
+
                         <div class="mb-4">
                             <label for="email" class="block mb-1">Email</label>
                             <input type="email" id="email" name="email" value="{{ old('email') }}" required
                                 class="w-full border px-3 py-2 rounded">
                         </div>
-            
+
                         <div class="mb-4">
                             <label for="password" class="block mb-1">Kata Sandi</label>
-                            <input type="password" id="password" name="password" required class="w-full border px-3 py-2 rounded">
+                            <input type="password" id="password" name="password" required
+                                class="w-full border px-3 py-2 rounded">
                         </div>
-            
+
                         <button type="submit"
                             class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-4 rounded">
                             Login
@@ -138,13 +139,13 @@
                 <div class="bg-white p-6 rounded-lg w-full max-w-md relative">
                     <button id="closeRegisterModal"
                         class="absolute top-2 right-3 text-gray-600 hover:text-red-500 text-2xl">&times;</button>
-            
+
                     <h2 class="text-2xl font-bold mb-4 text-center">Registrasi</h2>
-            
+
                     @if(session('success'))
                         <div class="bg-green-100 text-green-800 p-2 rounded mb-3">{{ session('success') }}</div>
                     @endif
-            
+
                     @if ($errors->any() && request()->is('register'))
                         <div class="bg-red-100 text-red-800 p-2 rounded mb-3">
                             <ul class="list-disc pl-5">
@@ -154,33 +155,34 @@
                             </ul>
                         </div>
                     @endif
-            
+
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
-            
+
                         <div class="mb-4">
                             <label for="name" class="block mb-1">Nama Lengkap</label>
                             <input type="text" id="name" name="name" value="{{ old('name') }}" required
                                 class="w-full border px-3 py-2 rounded">
                         </div>
-            
+
                         <div class="mb-4">
                             <label for="email" class="block mb-1">Alamat Email</label>
                             <input type="email" id="email" name="email" value="{{ old('email') }}" required
                                 class="w-full border px-3 py-2 rounded">
                         </div>
-            
+
                         <div class="mb-4">
                             <label for="password" class="block mb-1">Kata Sandi</label>
-                            <input type="password" id="password" name="password" required class="w-full border px-3 py-2 rounded">
+                            <input type="password" id="password" name="password" required
+                                class="w-full border px-3 py-2 rounded">
                         </div>
-            
+
                         <div class="mb-4">
                             <label for="password_confirmation" class="block mb-1">Konfirmasi Kata Sandi</label>
                             <input type="password" id="password_confirmation" name="password_confirmation" required
                                 class="w-full border px-3 py-2 rounded">
                         </div>
-            
+
                         <button type="submit"
                             class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-4 rounded">
                             Daftar
@@ -193,41 +195,41 @@
     </div>
 
     @stack('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const loginModal = document.getElementById('loginModal');
-        const registerModal = document.getElementById('registerModal');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginModal = document.getElementById('loginModal');
+            const registerModal = document.getElementById('registerModal');
 
-        document.getElementById('loginButton')?.addEventListener('click', () => {
-            loginModal?.classList.remove('hidden');
-        });
+            document.getElementById('loginButton')?.addEventListener('click', () => {
+                loginModal?.classList.remove('hidden');
+            });
 
-        document.getElementById('closeLoginModal')?.addEventListener('click', () => {
-            loginModal?.classList.add('hidden');
-        });
+            document.getElementById('closeLoginModal')?.addEventListener('click', () => {
+                loginModal?.classList.add('hidden');
+            });
 
-        document.getElementById('registerButton')?.addEventListener('click', () => {
-            registerModal?.classList.remove('hidden');
-        });
-
-        document.getElementById('closeRegisterModal')?.addEventListener('click', () => {
-            registerModal?.classList.add('hidden');
-        });
-
-        // Auto open modal if there are validation errors
-        @if ($errors->any())
-            @if (request()->is('register'))
+            document.getElementById('registerButton')?.addEventListener('click', () => {
                 registerModal?.classList.remove('hidden');
-            @else
+            });
+
+            document.getElementById('closeRegisterModal')?.addEventListener('click', () => {
+                registerModal?.classList.add('hidden');
+            });
+
+            // Auto open modal if there are validation errors
+            @if ($errors->any())
+                @if (request()->is('register'))
+                    registerModal?.classList.remove('hidden');
+                @else
+                    loginModal?.classList.remove('hidden');
+                @endif
+            @endif
+
+            @if(session('error'))
                 loginModal?.classList.remove('hidden');
             @endif
-        @endif
-
-        @if(session('error'))
-            loginModal?.classList.remove('hidden');
-        @endif
     });
-</script>
+    </script>
 
 
 </body>

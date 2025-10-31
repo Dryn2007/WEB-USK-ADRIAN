@@ -11,7 +11,7 @@ class Transaction extends Model
         'status',
         'bukti_bayar',
         'alamat',
-        'telepon',
+        'nomor_hp',
         'metode_pembayaran',
         'total',
     ];

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class KategoriController extends Controller
 {
- 
+
     public function index()
     {
         $kategoris = Kategori::all();
@@ -26,12 +26,8 @@ class KategoriController extends Controller
         $data = $request->validate([
             'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'foto' => 'nullable|image|max:2048'
         ]);
 
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('kategori', 'public');
-        }
 
         Kategori::create($data);
         return redirect()->route('admin.kategori.index');
@@ -47,12 +43,9 @@ class KategoriController extends Controller
         $data = $request->validate([
             'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'foto' => 'nullable|image|max:2048'
         ]);
 
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('kategori', 'public');
-        }
+    
 
         $kategori->update($data);
         return redirect()->route('admin.kategori.index');

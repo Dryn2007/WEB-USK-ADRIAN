@@ -23,13 +23,17 @@ class CartController extends Controller
     {
         \App\Models\Cart::create([
             'user_id' => Auth::id(),
-            'produk_id' => $id,
-            'jumlah' => 1
-        ]);
+                'produk_id' => $id,
+                'jumlah' => 1
+            ]);
 
         return redirect()->back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }
 
+
+    /**
+     * Method remove() Anda, tidak berubah.
+     */
     public function remove($id)
     {
         \App\Models\Cart::where('id', $id)->where('user_id', Auth::id())->delete();

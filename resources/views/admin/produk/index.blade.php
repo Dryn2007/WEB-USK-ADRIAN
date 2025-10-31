@@ -4,802 +4,372 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
     <div class="page-container">
-            <!-- Header Section -->
-            <div class="page-header">
-                <div class="header-content">
-                    <div class="header-info">
-                        <h1 class="page-title">
-                            <span class="title-icon">🛒</span>
-                            Product Management
-                        </h1>
-                        <p class="page-subtitle">Manage your product inventory with ease</p>
-                    </div>
-                    <div class="header-stats">
-                        <div class="stat-card">
-                            <div class="stat-number">{{ $produks->count() }}</div>
-                            <div class="stat-label">Total Products</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Bar -->
-            <div class="action-bar">
-                <div class="breadcrumb-nav">
-                    <a href="{{ route('admin.dashboard') }}" class="breadcrumb-item">
-                        <span class="breadcrumb-icon">🏠</span>
-                        Dashboard
-                    </a>
-                    <span class="breadcrumb-separator">→</span>
-                    <span class="breadcrumb-item active">Products</span>
-                </div>
-
-                <div class="action-buttons">
-                    <a href="{{ route('admin.produk.create') }}" class="btn btn-primary">
-                        <span class="btn-icon">➕</span>
-                        Add New Product
-                    </a>
-                </div>
-            </div>
-
-            <!-- Search and Filter Section -->
-            <div class="filter-section">
-                <div class="search-wrapper">
-                    <div class="search-input-wrapper">
-                        <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
-                        <div class="search-icon">🔍</div>
-                    </div>
-                </div>
-                <div class="filter-wrapper">
-                    <select id="categoryFilter" class="filter-select">
-                        <option value="">All Categories</option>
-                        @foreach($produks->unique('kategori.nama')->pluck('kategori.nama')->filter() as $category)
-                            <option value="{{ $category }}">{{ $category }}</option>
-                        @endforeach
-                    </select>
-                    <select id="sortBy" class="filter-select">
-                        <option value="name">Sort by Name</option>
-                        <option value="price">Sort by Price</option>
-                        <option value="category">Sort by Category</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Products Grid -->
-            <div class="products-container">
-                @forelse ($produks as $index => $produk)
-                    <div class="product-card" data-name="{{ strtolower($produk->nama) }}" data-category="{{ $produk->kategori->nama ?? '' }}" data-price="{{ $produk->harga }}">
-                        <!-- Product Image -->
-                        <div class="product-image-wrapper">
-                            @if ($produk->foto)
-                                <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama }}" class="product-image">
-                            @else
-                                <div class="product-image-placeholder">
-                                    <span class="placeholder-icon">📦</span>
-                                    <span class="placeholder-text">No Image</span>
-                                </div>
-                            @endif
-                            <div class="product-overlay">
-                                <div class="product-actions">
-                                    <a href="{{ route('admin.produk.edit', $produk->id) }}" class="action-btn edit-btn" title="Edit Product">
-                                        <span>✏️</span>
-                                    </a>
-                                    <button type="button" class="action-btn delete-btn" onclick="confirmDelete({{ $produk->id }})" title="Delete Product">
-                                        <span>🗑️</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Product Info -->
-                        <div class="product-info">
-                            <h3 class="product-name">{{ $produk->nama }}</h3>
-                            <div class="product-category">
-                                <span class="category-icon">🏷️</span>
-                                {{ $produk->kategori->nama ?? 'Uncategorized' }}
-                            </div>
-                            <div class="product-price">
-                                <span class="price-currency">Rp</span>
-                                <span class="price-amount">{{ number_format($produk->harga, 0, ',', '.') }}</span>
-                            </div>
-                            <div class="product-number">
-                                <span class="number-label">#</span>
-                                <span class="number-value">{{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}</span>
-                            </div>
-                        </div>
-
-                        <!-- Hidden Delete Form -->
-                        <form id="delete-form-{{ $produk->id }}" action="{{ route('admin.produk.destroy', $produk->id) }}" method="POST" style="display: none;">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-                    </div>
-                @empty
-                    <div class="empty-state">
-                        <div class="empty-icon">📦</div>
-                        <h3 class="empty-title">No Products Found</h3>
-                        <p class="empty-description">Start by adding your first product to the inventory</p>
-                        <a href="{{ route('admin.produk.create') }}" class="btn btn-primary">
-                            <span class="btn-icon">➕</span>
-                            Add First Product
-                        </a>
-                    </div>
-                @endforelse
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="stats-section">
-                <div class="stat-item">
-                    <div class="stat-icon">📊</div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ $produks->count() }}</div>
-                        <div class="stat-title">Total Products</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-content">
-                        <div class="stat-value">Rp {{ number_format($produks->sum('harga'), 0, ',', '.') }}</div>
-                        <div class="stat-title">Total Value</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">🏷️</div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ $produks->unique('kategori_id')->count() }}</div>
-                        <div class="stat-title">Categories</div>
-                    </div>
-                </div>
+        <!-- Header Section -->
+        <div class="page-header">
+            <h1 class="page-title">🛒 Product Management</h1>
+            <p class="page-subtitle">Manage your product inventory with ease</p>
+            <div class="stat-box">
+                <span class="stat-number">{{ $produks->count() }}</span>
+                <span class="stat-label">Total Products</span>
             </div>
         </div>
 
-        @if (session('success'))
-            <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: '{{ session('success') }}',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    toast: true,
-                    position: 'top-end'
-                });
-            </script>
-        @endif
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <div class="breadcrumb-nav">
+                <a href="{{ route('admin.dashboard') }}" class="breadcrumb-item">🏠 Dashboard</a>
+                <span class="breadcrumb-separator">→</span>
+                <span class="breadcrumb-item active">Products</span>
+            </div>
+            <a href="{{ route('admin.produk.create') }}" class="btn">➕ Add New Product</a>
+        </div>
 
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
+            <select id="sortBy" class="filter-select">
+                <option value="name">Sort by Name</option>
+                <option value="price">Sort by Price</option>
+            </select>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-container" id="productsContainer">
+            @forelse ($produks as $index => $produk)
+                <div class="product-card" data-name="{{ strtolower($produk->nama) }}" data-price="{{ $produk->harga }}">
+                    @if ($produk->foto)
+                        <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama }}" class="product-image">
+                    @else
+                        <div class="image-placeholder">📦 No Image</div>
+                    @endif
+
+                    <h3 class="product-name">{{ $produk->nama }}</h3>
+                    <p class="product-price">Rp {{ number_format($produk->harga, 0, ',', '.') }}</p>
+                    <div class="stock-info">
+                        <span class="stock-label">Stock:</span>
+                        <span class="stock-value {{ $produk->stock < 5 ? 'low-stock' : '' }}">
+                            {{ $produk->stock }}
+                        </span>
+                    </div>
+                    <form action="{{ route('admin.produk.updateStock', $produk->id) }}" method="POST" class="stock-form">
+                        @csrf
+                        @method('PATCH')
+                        <input type="number" name="stock" value="{{ $produk->stock }}" min="0">
+                        <button type="submit" class="btn btn-primary">Update Stock</button>
+                    </form>
+
+                    <div class="product-actions">
+                        <a href="{{ route('admin.produk.edit', $produk->id) }}" class="btn-action">✏️ Edit</a>
+                        <button type="button" class="btn-action delete" onclick="confirmDelete({{ $produk->id }})">🗑️
+                            Delete</button>
+                    </div>
+
+                    <form id="delete-form-{{ $produk->id }}" action="{{ route('admin.produk.destroy', $produk->id) }}"
+                        method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                </div>
+            @empty
+                <div class="empty-state">
+                    <h3>No Products Found</h3>
+                    <p>Start by adding your first product to the inventory</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+
+    @if (session('success'))
         <script>
-            function confirmDelete(id) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This product will be permanently deleted!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#6b7280',
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'Cancel',
-                    backdrop: `rgba(0,0,0,0.8)`,
-                    customClass: {
-                        popup: 'swal-popup',
-                        confirmButton: 'swal-confirm',
-                        cancelButton: 'swal-cancel'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('delete-form-' + id).submit();
-                    }
-                })
-            }
-
-            // Search and Filter Functionality
-            document.addEventListener('DOMContentLoaded', function() {
-                const searchInput = document.getElementById('searchInput');
-                const categoryFilter = document.getElementById('categoryFilter');
-                const sortBy = document.getElementById('sortBy');
-                const productCards = document.querySelectorAll('.product-card');
-                const productsContainer = document.querySelector('.products-container');
-
-                function filterAndSearch() {
-                    const searchTerm = searchInput.value.toLowerCase();
-                    const selectedCategory = categoryFilter.value;
-
-                    let visibleCards = [];
-
-                    productCards.forEach(card => {
-                        const name = card.dataset.name;
-                        const category = card.dataset.category;
-
-                        const matchesSearch = name.includes(searchTerm);
-                        const matchesCategory = !selectedCategory || category === selectedCategory;
-
-                        if (matchesSearch && matchesCategory) {
-                            card.style.display = 'block';
-                            visibleCards.push(card);
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-
-                    // Show empty state if no results
-                    if (visibleCards.length === 0 && productCards.length > 0) {
-                        if (!document.querySelector('.no-results')) {
-                            const noResults = document.createElement('div');
-                            noResults.className = 'no-results empty-state';
-                            noResults.innerHTML = `
-                                <div class="empty-icon">🔍</div>
-                                <h3 class="empty-title">No Products Found</h3>
-                                <p class="empty-description">Try adjusting your search or filters</p>
-                            `;
-                            productsContainer.appendChild(noResults);
-                        }
-                    } else {
-                        const noResults = document.querySelector('.no-results');
-                        if (noResults) {
-                            noResults.remove();
-                        }
-                    }
-                }
-
-                function sortProducts() {
-                    const sortValue = sortBy.value;
-                    const cardsArray = Array.from(productCards);
-
-                    cardsArray.sort((a, b) => {
-                        switch(sortValue) {
-                            case 'name':
-                                return a.dataset.name.localeCompare(b.dataset.name);
-                            case 'price':
-                                return parseInt(a.dataset.price) - parseInt(b.dataset.price);
-                            case 'category':
-                                return a.dataset.category.localeCompare(b.dataset.category);
-                            default:
-                                return 0;
-                        }
-                    });
-
-                    cardsArray.forEach(card => {
-                        productsContainer.appendChild(card);
-                    });
-                }
-
-                searchInput.addEventListener('input', filterAndSearch);
-                categoryFilter.addEventListener('change', filterAndSearch);
-                sortBy.addEventListener('change', sortProducts);
-
-                // Animate cards on load
-                productCards.forEach((card, index) => {
-                    card.style.animationDelay = `${index * 0.1}s`;
-                });
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 3000,
+                toast: true,
+                position: 'top-end'
             });
         </script>
-
-        <style>
-            .page-container {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
-                padding: 2rem;
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            }
-
-            /* Header Section */
-            .page-header {
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                border-radius: 20px;
-                padding: 2rem;
-                margin-bottom: 2rem;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            }
-
-            .header-content {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .page-title {
-                font-size: 2.5rem;
-                font-weight: 800;
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                margin: 0;
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-            }
-
-            .title-icon {
-                font-size: 2rem;
-            }
-
-            .page-subtitle {
-                color: #64748b;
-                font-size: 1.1rem;
-                margin: 0.5rem 0 0 0;
-            }
-
-            .header-stats {
-                display: flex;
-                gap: 1rem;
-            }
-
-            .stat-card {
-                background: rgba(255, 255, 255, 0.8);
-                padding: 1rem 1.5rem;
-                border-radius: 12px;
-                text-align: center;
-                min-width: 100px;
-            }
-
-            .stat-number {
-                font-size: 2rem;
-                font-weight: 800;
-                color: #667eea;
-            }
-
-            .stat-label {
-                font-size: 0.875rem;
-                color: #64748b;
-                font-weight: 500;
-            }
-
-            /* Action Bar */
-            .action-bar {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 2rem;
-            }
-
-            .breadcrumb-nav {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 0.9rem;
-            }
-
-            .breadcrumb-item {
-                color: rgba(255, 255, 255, 0.8);
-                padding: 0.5rem 1rem;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 20px;
-                text-decoration: none;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                transition: all 0.3s ease;
-            }
-
-            .breadcrumb-item:hover {
-                background: rgba(255, 255, 255, 0.2);
-                color: white;
-                text-decoration: none;
-            }
-
-            .breadcrumb-item.active {
-                background: rgba(255, 255, 255, 0.9);
-                color: #374151;
-            }
-
-            .breadcrumb-separator {
-                color: rgba(255, 255, 255, 0.6);
-            }
-
-            .action-buttons {
-                display: flex;
-                gap: 1rem;
-            }
-
-            /* Filter Section */
-            .filter-section {
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                border-radius: 16px;
-                padding: 1.5rem;
-                margin-bottom: 2rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 2rem;
-            }
-
-            .search-wrapper {
-                flex: 1;
-                max-width: 400px;
-            }
-
-            .search-input-wrapper {
-                position: relative;
-            }
-
-            .search-input {
-                width: 100%;
-                padding: 0.75rem 3rem 0.75rem 1rem;
-                border: 2px solid #e5e7eb;
-                border-radius: 12px;
-                font-size: 1rem;
-                transition: all 0.3s ease;
-            }
-
-            .search-input:focus {
-                outline: none;
-                border-color: #667eea;
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            }
-
-            .search-icon {
-                position: absolute;
-                right: 1rem;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #9ca3af;
-            }
-
-            .filter-wrapper {
-                display: flex;
-                gap: 1rem;
-            }
-
-            .filter-select {
-                padding: 0.75rem 1rem;
-                border: 2px solid #e5e7eb;
-                border-radius: 12px;
-                background: white;
-                font-size: 0.9rem;
-                min-width: 150px;
-                transition: all 0.3s ease;
-            }
-
-            .filter-select:focus {
-                outline: none;
-                border-color: #667eea;
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            }
-
-            /* Products Grid */
-            .products-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 2rem;
-                margin-bottom: 3rem;
-            }
-
-            .product-card {
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                border-radius: 20px;
-                overflow: hidden;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-                transition: all 0.3s ease;
-                animation: slideInUp 0.6s ease-out;
-                animation-fill-mode: both;
-            }
-
-            .product-card:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            }
-
-            .product-image-wrapper {
-                position: relative;
-                height: 200px;
-                overflow: hidden;
-            }
-
-            .product-image {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 0.3s ease;
-            }
-
-            .product-card:hover .product-image {
-                transform: scale(1.05);
-            }
-
-            .product-image-placeholder {
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: #9ca3af;
-            }
-
-            .placeholder-icon {
-                font-size: 3rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .placeholder-text {
-                font-size: 0.875rem;
-                font-weight: 500;
-            }
-
-            .product-overlay {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.7);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-
-            .product-card:hover .product-overlay {
-                opacity: 1;
-            }
-
-            .product-actions {
-                display: flex;
-                gap: 1rem;
-            }
-
-            .action-btn {
-                width: 50px;
-                height: 50px;
-                border: none;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.9);
-                color: #374151;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.2rem;
-                transition: all 0.3s ease;
-                text-decoration: none;
-            }
-
-            .action-btn:hover {
-                background: white;
-                transform: scale(1.1);
-            }
-
-            .edit-btn:hover {
-                color: #10b981;
-            }
-
-            .delete-btn:hover {
-                color: #ef4444;
-            }
-
-            .product-info {
-                padding: 1.5rem;
-            }
-
-            .product-name {
-                font-size: 1.25rem;
-                font-weight: 700;
-                color: #374151;
-                margin: 0 0 0.75rem 0;
-                line-height: 1.3;
-            }
-
-            .product-category {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                color: #6b7280;
-                font-size: 0.875rem;
-                margin-bottom: 1rem;
-            }
-
-            .category-icon {
-                font-size: 1rem;
-            }
-
-            .product-price {
-                display: flex;
-                align-items: baseline;
-                gap: 0.25rem;
-                margin-bottom: 1rem;
-            }
-
-            .price-currency {
-                font-size: 1rem;
-                color: #6b7280;
-                font-weight: 500;
-            }
-
-            .price-amount {
-                font-size: 1.5rem;
-                font-weight: 800;
-                color: #10b981;
-            }
-
-            .product-number {
-                display: flex;
-                align-items: center;
-                gap: 0.25rem;
-                font-size: 0.875rem;
-                color: #9ca3af;
-            }
-
-            .number-label {
-                font-weight: 500;
-            }
-
-            .number-value {
-                font-family: monospace;
-                font-weight: 600;
-            }
-
-            /* Empty State */
-            .empty-state {
-                grid-column: 1 / -1;
-                text-align: center;
-                padding: 4rem 2rem;
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                border-radius: 20px;
-            }
-
-            .empty-icon {
-                font-size: 4rem;
-                margin-bottom: 1rem;
-            }
-
-            .empty-title {
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: #374151;
-                margin-bottom: 0.5rem;
-            }
-
-            .empty-description {
-                color: #6b7280;
-                margin-bottom: 2rem;
-            }
-
-            /* Stats Section */
-            .stats-section {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 1.5rem;
-            }
-
-            .stat-item {
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                border-radius: 16px;
-                padding: 1.5rem;
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-            }
-
-            .stat-icon {
-                font-size: 2rem;
-                width: 60px;
-                height: 60px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                border-radius: 12px;
-            }
-
-            .stat-content {
-                flex: 1;
-            }
-
-            .stat-value {
-                font-size: 1.25rem;
-                font-weight: 800;
-                color: #374151;
-            }
-
-            .stat-title {
-                font-size: 0.875rem;
-                color: #6b7280;
-                font-weight: 500;
-            }
-
-            /* Buttons */
-            .btn {
-                padding: 0.75rem 1.5rem;
-                border: none;
-                border-radius: 12px;
-                font-weight: 600;
-                font-size: 0.9rem;
-                cursor: pointer;
-                text-decoration: none;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                transition: all 0.3s ease;
-            }
-
-            .btn-primary {
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                color: white;
-            }
-
-            .btn-primary:hover {
-                background: linear-gradient(135deg, #5a67d8, #6b46c1);
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-                text-decoration: none;
-                color: white;
-            }
-
-            .btn-icon {
-                font-size: 1rem;
-            }
-
-            /* Responsive Design */
-            @media (max-width: 768px) {
-                .page-container {
-                    padding: 1rem;
+    @endif
+
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This product will be permanently deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#5D4037',
+                cancelButtonColor: '#A1887F',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
                 }
+            })
+        }
 
-                .header-content {
-                    flex-direction: column;
-                    gap: 1rem;
-                    text-align: center;
+        // Search filter
+        document.getElementById("searchInput").addEventListener("keyup", function () {
+            let value = this.value.toLowerCase();
+            let products = document.querySelectorAll(".product-card");
+
+            products.forEach(card => {
+                let name = card.getAttribute("data-name");
+                if (name.includes(value)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
                 }
+            });
+        });
 
-                .page-title {
-                    font-size: 2rem;
-                }
+        document.querySelectorAll('.stock-form').forEach(form => {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(form);
 
-                .action-bar {
-                    flex-direction: column;
-                    gap: 1rem;
-                    align-items: stretch;
-                }
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            }
+                        });
 
-                .filter-section {
-                    flex-direction: column;
-                    gap: 1rem;
-                }
+                        if (!response.ok) throw new Error('Failed to update stock');
 
-                .filter-wrapper {
-                    flex-direction: column;
-                }
+                        window.location.reload();
+                    } catch (error) {
+                        alert(error.message);
+                    }
+                });
+            });
+    </script>
 
-                .products-container {
-                    grid-template-columns: 1fr;
-                    gap: 1rem;
-                }
+    <script>
+        // Add this to your existing JavaScript
+        document.querySelectorAll('.stock-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
 
-                .stats-section {
-                    grid-template-columns: 1fr;
-                }
-            }
+                const formData = new FormData(this);
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalText = submitButton.innerHTML;
 
-            /* Animations */
-            @keyframes slideInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
+                submitButton.innerHTML = 'Updating...';
+                submitButton.disabled = true;
 
-            /* SweetAlert Custom Styles */
-            .swal-popup {
-                border-radius: 16px;
-            }
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Stock Updated',
+                            text: 'Product stock has been updated successfully',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
 
-            .swal-confirm {
-                border-radius: 8px;
-            }
+                        // Update the displayed stock value
+                        const stockValue = this.closest('.product-card').querySelector('.stock-value');
+                        stockValue.textContent = formData.get('stock');
+                        stockValue.classList.toggle('low-stock', formData.get('stock') < 5);
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to update stock',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    })
+                    .finally(() => {
+                        submitButton.innerHTML = originalText;
+                        submitButton.disabled = false;
+                    });
+            });
+        });
+    </script>
 
-            .swal-cancel {
-                border-radius: 8px;
-            }
-        </style>
+    <style>
+        :root {
+            --primary-color: #5D4037;
+            --secondary-color: #A1887F;
+            --background-color: #F5F5F5;
+        }
+
+        body,
+        .page-container {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-color);
+        }
+
+        .page-container {
+            padding: 2rem;
+        }
+        h1,
+        h3 {
+            font-family: 'Lora', serif;
+            color: var(--primary-color);
+        }
+
+        .page-header {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: var(--secondary-color);
+        }
+
+        .stat-box {
+            margin-top: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb-item {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb-item.active {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-input,
+        .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            flex: 1;
+        }
+
+        .products-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .image-placeholder {
+            background: #eee;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .product-actions {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: var(--secondary-color);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn-action.delete {
+            background: #d32f2f;
+        }
+
+        .btn-action:hover {
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 5rem;
+            background: #fff;
+            border-radius: 12px;
+        }
+    </style>
 @endsection
